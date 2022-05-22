@@ -1,0 +1,31 @@
+ssh root@45.76.11.205
+sudo apt update && sudo apt upgrade
+useradd -m Thijs
+passwd Thijs …
+groupadd wheel
+usermod -G wheel Thijs
+vim /etc/sudoers
+su Thijs
+cd .ssh
+ssh-keygen -t rsa -b 4096
+scp DebVPN.pub Thijs@45.76.11.205:
+cd /home/Thijs
+mkdir .ssh
+touch .ssh/authorized_keys
+cat DebVPN.pub >> .ssh/authorized_keys
+rm DebVPN.pub
+sudo vim /etc/ssh/sshd_config
+sudo systemctl restart sshd
+exit
+exit
+ssh -i .ssh/DebVPN Thijs@45.76.11.205
+sudo apt install openvpn
+curl -LJO https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh
+chmod +x openvpn-install.sh
+sudo ./openvpn-install.sh
+sudo vim /etc/openvpn/server.conf
+sudo systemctl restart openvpn
+sftp -i .ssh/DebVPN Thijs@45.76.11.205
+get desktop.ovpn
+exit
+sudo openvpn --config desktop.ovpn
